@@ -16,10 +16,57 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="bg-gray-900 text-white">
+	<body class="bg-gray-100 text-gray-800">
+		<header class="bg-gray-800 text-white p-4 shadow-md">
+			<nav class="container mx-auto flex justify-between items-center">
+				<div class="text-xl font-bold">Satya ki aur</div> {/* Site Title */}
+				<div class="flex items-center space-x-4">
+					<a href="/who-we-are" class="hover:text-gray-300">WHO WE ARE</a>
+					<a href="/teachings" class="hover:text-gray-300">THE TEACHINGS</a>
+					<a href="/signup" class="hover:text-gray-300">SIGNUP</a>
+					<a href="/audio" class="hover:text-gray-300">AUDIO ON / OFF</a>
+					{/* Language toggle buttons removed for now */}
+				</div>
+			</nav>
+		</header>
 		<slot />
 	</body>
 </html>
+
+<script>
+  const LANG_STORAGE_KEY = 'selectedLanguage';
+  let currentLanguage = localStorage.getItem(LANG_STORAGE_KEY) || 'en'; // Default to English
+
+  const enButton = document.getElementById('lang-en');
+  const hiButton = document.getElementById('lang-hi');
+
+  function setLanguage(lang: string) {
+    currentLanguage = lang;
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+    console.log(`Language set to: ${lang}`);
+    // Here we would typically trigger a re-render or update content
+    // For now, we can add a class to the body to indicate language for styling
+    document.documentElement.lang = lang; // Set html lang attribute
+    if (lang === 'hi') {
+      document.body.classList.add('lang-hi');
+      document.body.classList.remove('lang-en');
+      hiButton?.classList.add('bg-gray-700');
+      enButton?.classList.remove('bg-gray-700');
+    } else {
+      document.body.classList.add('lang-en');
+      document.body.classList.remove('lang-hi');
+      enButton?.classList.add('bg-gray-700');
+      hiButton?.classList.remove('bg-gray-700');
+    }
+    // In a full Astro setup, you might use a store or events to signal language change to components
+  }
+
+  enButton?.addEventListener('click', () => setLanguage('en'));
+  hiButton?.addEventListener('click', () => setLanguage('hi'));
+
+  // Set initial state on load
+  // setLanguage(currentLanguage); // Temporarily disable language script
+</script>
 
 <style>
 	html,
