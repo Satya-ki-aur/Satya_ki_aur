@@ -1,54 +1,99 @@
 ---
-// import Welcome from '../components/Welcome.astro'; // Commenting out or deleting this line
 import Layout from '../layouts/Layout.astro';
 import { supabase } from '../lib/supabaseClient.js';
 
-// Fetch videos from Supabase
 let videos = [];
 const { data, error } = await supabase
-	.from('Satya_ki_aur')
-	.select('title, youtube_id');
+  .from('Satya_ki_aur')
+  .select('title, youtube_id');
 
 if (error) {
-	console.error('Error fetching videos:', error.message);
+  console.error('Error fetching videos:', error.message);
 } else {
-	videos = data;
+  videos = data;
 }
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout title="Satya ki aur सत्य की ओर">
-	{/* <Welcome /> */ /* Commenting out or deleting this line */}
+  <header class="fixed w-full bg-white text-gray-900 shadow-md z-50">
+    <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="/" class="text-2xl font-serif">Satya ki aur</a>
+      <div class="flex space-x-8">
+        <a href="#about" class="hover:text-orange-600">WHO WE ARE</a>
+        <a href="#teachings" class="hover:text-orange-600">THE TEACHINGS</a>
+        <a href="#signup" class="hover:text-orange-600">SIGNUP</a>
+        <button class="hover:text-orange-600">AUDIO ON / OFF</button>
+      </div>
+    </nav>
+  </header>
 
-	<main class="container mx-auto pt-8 md:pt-12 p-4 md:px-8">
-		<h1 class="text-3xl font-bold text-center mb-8">सत्य की ओर</h1>
-		{/* Video list starts here */}
-		{videos.length > 0 ? (
-			<ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{videos.map((video) => (
-					<li key={video.youtube_id} class="list-none bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform duration-200 ease-in-out hover:scale-105">
-						<div class="aspect-w-16 aspect-h-9">
-							<iframe 
-								class="w-full h-full"
-								src={`https://www.youtube.com/embed/${video.youtube_id}`}
-								title="YouTube video player" 
-								frameborder="0" 
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-								allowfullscreen
-							></iframe>
-						</div>
-						<div class="p-4">
-							<h2 class="text-xl font-semibold mb-2">{video.title}</h2>
-							{/* We can remove this YouTube ID if it's redundant now */}
-							{/* <p class="text-sm text-gray-400">YouTube ID: {video.youtube_id}</p> */}
-						</div>
-					</li>
-				))}
-			</ul>
-		) : (
-			<p>No videos found. Add some to your Supabase table!</p>
-		)}
-	</main>
+  <main>
+    <!-- Hero Section -->
+    <section class="relative h-screen">
+      <div class="absolute inset-0 bg-black/50"></div>
+      <div class="relative h-full flex items-center justify-center text-center text-white">
+        <div class="max-w-4xl px-4">
+          <h1 class="text-5xl md:text-7xl font-serif mb-6">सत्य की ओर</h1>
+          <p class="text-xl md:text-2xl">Exploring the path to truth through wisdom and understanding</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Videos Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-serif text-center mb-12 text-gray-900">Latest Teachings</h2>
+        {videos.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {videos.map((video) => (
+              <div class="bg-gray-50 rounded-lg overflow-hidden shadow-lg">
+                <div class="aspect-w-16 aspect-h-9">
+                  <iframe 
+                    src={`https://www.youtube.com/embed/${video.youtube_id}`}
+                    title={video.title}
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    class="w-full h-full"
+                  ></iframe>
+                </div>
+                <div class="p-6">
+                  <h3 class="text-xl font-serif text-gray-900">{video.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p class="text-center text-gray-700">No videos found. Please check back later.</p>
+        )}
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-serif mb-4">About Us</h3>
+          <p class="text-gray-400">Dedicated to spreading wisdom and understanding through authentic teachings.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-serif mb-4">Quick Links</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#about" class="hover:text-white">Who We Are</a></li>
+            <li><a href="#teachings" class="hover:text-white">The Teachings</a></li>
+            <li><a href="#signup" class="hover:text-white">Sign Up</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-serif mb-4">Connect</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-white">YouTube</a></li>
+            <li><a href="#" class="hover:text-white">Facebook</a></li>
+            <li><a href="#" class="hover:text-white">Twitter</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
 </Layout>
