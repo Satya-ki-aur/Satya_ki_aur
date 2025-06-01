@@ -2,119 +2,114 @@
 import Layout from '../layouts/Layout.astro';
 import { supabase } from '../lib/supabaseClient.js';
 
+// Define a type for our video objects
 interface Video {
-  youtube_id: string;
-  title: string;
-  // title_hi?: string; // Example: if you have Hindi titles too
-  // created_at?: string; // If you use it for ordering
+	youtube_id: string;
+	title: string;
+	// created_at?: string; // Add if you use it for ordering
 }
 
 let videos: Video[] = [];
 const { data, error } = await supabase
-  .from('Satya_ki_aur')
-  .select('youtube_id, title') // Add any other fields you need, like created_at
-  // Ensure you have a 'created_at' column or similar for ordering if you use this line
-  // .order('created_at', { ascending: false })
-  .limit(3);
+	.from('Satya_ki_aur') // Your table name
+	.select('youtube_id, title') // Select fields you need
+	// .order('created_at', { ascending: false }) // Uncomment and adjust if you have a created_at or similar column for ordering
+	.limit(3); // Show recent videos
 
 if (error) {
-  console.error('Error fetching videos:', error.message);
+	console.error('Error fetching videos:', error.message);
 } else if (data) {
-  videos = data;
+	videos = data;
 }
 ---
 
 <Layout title="Satya ki aur सत्य की ओर">
-  <main class="flex flex-col items-center justify-center min-h-[calc(100vh-var(--header-height,80px))] bg-gray-500 text-white text-center p-4">
-    <h1 class="text-6xl md:text-8xl font-bold mb-6 NotoSerifDevanagari">सत्य की ओर</h1>
-    <p class="text-xl md:text-2xl text-gray-200">Exploring the path to truth through wisdom and understanding</p>
-  </main>
+	<main class="flex flex-col items-center justify-center min-h-[calc(100vh-var(--header-height,80px))] bg-gray-500 text-white text-center p-4">
+		<h1 class="text-6xl md:text-8xl font-bold mb-6 NotoSerifDevanagari">सत्य की ओर</h1>
+		<p class="text-xl md:text-2xl text-gray-200">Exploring the path to truth through wisdom and understanding</p>
+	</main>
 
-  <!-- Latest Teachings Section -->
-  <section class="py-12 md:py-16 bg-gray-100">
-    <div class="container mx-auto px-4 md:px-8">
-      <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">Latest Teachings</h2>
-      {videos.length > 0 ? (
-        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {videos.map((video) => (
-            <li class="list-none bg-white rounded-lg shadow-md overflow-hidden flex flex-col video-card">
-              <div class="video-thumbnail-container w-full aspect-video relative cursor-pointer group">
-                <img 
-                  src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`} 
-                  alt={`Thumbnail for ${video.title}`} 
-                  class="video-thumbnail w-full h-full object-cover absolute inset-0" 
-                  data-youtube-id={video.youtube_id} 
-                  onerror="this.style.display='none'; const overlay = this.parentElement.querySelector('.play-icon-overlay'); if (overlay) { overlay.style.opacity = '1'; overlay.classList.remove('opacity-0'); }" 
-                />
-                <div class="play-icon-overlay absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                  <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8.118v3.764a1 1 0 001.555.832l3.197-1.882a1 1 0 000-1.664l-3.197-1.882z" clip-rule="evenodd"></path></svg>
-                </div>
-                <div class="video-player-container absolute inset-0 w-full h-full z-20"></div>
-              </div>
-              <div class="p-4 flex-grow">
-                <h3 class="text-lg font-semibold text-gray-700 mb-1">
-                  {video.title}
-                </h3>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="text-center text-gray-600">No teachings found at the moment. Please check back later.</p>
-      )}
-    </div>
-  </section>
-
+	<!-- Latest Teachings Section -->
+	<section class="py-12 md:py-16 bg-gray-100">
+		<div class="container mx-auto px-4 md:px-8 lg:max-w-4xl xl:max-w-5xl">
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">Latest Teachings</h2>
+			{videos.length > 0 ? (
+				<ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+					{videos.map((video) => (
+						<li class="list-none bg-white rounded-lg shadow-md overflow-hidden flex flex-col video-card min-h-[30rem]" data-astro-key={video.youtube_id}>
+							<div class="video-thumbnail-container w-full aspect-video relative cursor-pointer group">
+								<img 
+									src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`} 
+									alt={`Thumbnail for ${video.title}`} 
+									class="video-thumbnail w-full h-full object-cover absolute inset-0" 
+									data-youtube-id={video.youtube_id} 
+									onerror="this.style.display='none'; const overlay = this.parentElement.querySelector('.play-icon-overlay'); if (overlay) { overlay.style.opacity = '1'; overlay.classList.remove('opacity-0'); }" 
+								/>
+								<div class="play-icon-overlay absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+									<svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8.118v3.764a1 1 0 001.555.832l3.197-1.882a1 1 0 000-1.664l-3.197-1.882z" clip-rule="evenodd"></path></svg>
+								</div>
+								<div class="video-player-container absolute inset-0 w-full h-full z-20"></div>
+							</div>
+							<div class="p-6 flex-grow">
+								<h3 class="text-lg font-semibold text-gray-700 mb-1">
+									{video.title}
+								</h3>
+							</div>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="text-center text-gray-600">No teachings found at the moment. Please check back later.</p>
+			)}
+		</div>
+	</section>
 </Layout>
 
 <style>
-  :root {
-    --header-height: 80px; /* Adjust if your header height changes */
-  }
-  .NotoSerifDevanagari {
-    font-family: 'Noto Serif Devanagari', serif; /* Ensure this font is available */
-  }
-  .video-player-container iframe {
-    width: 100%;
-    height: 100%;
-  }
+	:root {
+		--header-height: 80px; /* Adjust if your header height changes */
+	}
+	.NotoSerifDevanagari {
+		font-family: 'Noto Serif Devanagari', serif; /* Ensure this font is available */
+	}
+	.video-player-container iframe {
+		width: 100%;
+		height: 100%;
+	}
 </style>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.video-thumbnail-container').forEach(container => {
-      container.addEventListener('click', function() {
-        const playerContainer = this.querySelector('.video-player-container');
-        const imgThumbnail = this.querySelector('.video-thumbnail');
-        const youtubeId = imgThumbnail ? imgThumbnail.dataset.youtubeId : null;
-        
-        const playIconOverlay = this.querySelector('.play-icon-overlay');
+	document.addEventListener('DOMContentLoaded', () => {
+		document.querySelectorAll('.video-thumbnail-container').forEach(container => {
+			container.addEventListener('click', function() {
+				const playerContainer = this.querySelector('.video-player-container');
+				const imgThumbnail = this.querySelector('.video-thumbnail');
+				const youtubeId = imgThumbnail ? imgThumbnail.dataset.youtubeId : null;
+				const playIconOverlay = this.querySelector('.play-icon-overlay');
 
-        if (!youtubeId) {
-          console.error('YouTube ID not found for this video.');
-          return;
-        }
+				if (!youtubeId) {
+					console.error('YouTube ID not found for this video.');
+					return;
+				}
 
-        if (!playerContainer.querySelector('iframe')) { 
-          // Re-enable hiding the thumbnail and overlay
-          if(imgThumbnail) imgThumbnail.style.opacity = '0'; 
-          if(playIconOverlay) playIconOverlay.style.opacity = '0';
+				if (!playerContainer.querySelector('iframe')) { 
+					if(imgThumbnail) imgThumbnail.style.opacity = '0'; 
+					if(playIconOverlay) playIconOverlay.style.opacity = '0';
 
-          const iframe = document.createElement('iframe');
-          iframe.setAttribute('src', `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`);
-          iframe.setAttribute('frameborder', '0');
-          iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-          iframe.setAttribute('allowfullscreen', '');
-          // Explicitly set iframe style to fill its container
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.position = 'absolute'; // Ensure it respects container bounds if container is also absolute
-          iframe.style.top = '0';
-          iframe.style.left = '0';
-          
-          playerContainer.appendChild(iframe);
-        } 
-      });
-    });
-  });
+					const iframe = document.createElement('iframe');
+					iframe.setAttribute('src', `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`);
+					iframe.setAttribute('frameborder', '0');
+					iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+					iframe.setAttribute('allowfullscreen', '');
+					iframe.style.width = '100%';
+					iframe.style.height = '100%';
+					iframe.style.position = 'absolute';
+					iframe.style.top = '0';
+					iframe.style.left = '0';
+					
+					playerContainer.appendChild(iframe);
+				} 
+			});
+		});
+	});
 </script>
