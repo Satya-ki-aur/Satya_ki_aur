@@ -28,15 +28,16 @@ if (error) {
 ---
 
 <Layout title="Satya ki aur सत्य की ओर">
-	<main class="flex flex-col items-center justify-center min-h-[calc(100vh-var(--header-height,80px))] bg-gray-500 text-white text-center p-4">
-		<h1 class="text-6xl md:text-8xl font-bold mb-6 NotoSerifDevanagari">सत्य की ओर</h1>
-		<p class="text-xl md:text-2xl text-gray-200">Exploring the path to truth through wisdom and understanding</p>
+	<main class="flex flex-col items-center justify-center min-h-[calc(100vh-var(--header-height,80px))] bg-sky-200 text-center p-4">
+		<img src="/Channel Logo.jpg" alt="Satya ki aur Logo" class="h-32 w-32 md:h-40 md:w-40 rounded-full mb-8" />
+		<h1 class="text-6xl md:text-8xl font-bold mb-6 NotoSerifDevanagari text-slate-800">सत्य की ओर</h1>
+		<p class="text-xl md:text-2xl text-slate-700">Exploring the path to truth through wisdom and understanding</p>
 	</main>
 
 	<!-- Latest Teachings Section -->
-	<section class="py-12 md:py-16 bg-gray-100">
+	<section class="py-12 md:py-16 bg-blue-100">
 		<div class="container mx-auto px-4 md:px-8 lg:max-w-4xl xl:max-w-5xl">
-			<h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">Latest Teachings</h2>
+			<h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-blue-800">Latest Teachings</h2>
 			{videos.length > 0 ? (
 				<ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 					{videos.map((video) => (
@@ -55,11 +56,11 @@ if (error) {
 								<div class="video-player-container absolute inset-0 w-full h-full z-20"></div>
 							</div>
 							<div class="px-3 py-1">
-								<h3 class="text-base font-semibold text-gray-700 mb-1">
+								<h3 class="text-base font-semibold text-blue-700 mb-1">
 									{video.title}
 								</h3>
 								{video.title_hindi && (
-									<h3 class="text-base font-semibold text-gray-700 mb-1 NotoSerifDevanagari">
+									<h3 class="text-base font-semibold text-blue-700 mb-1 NotoSerifDevanagari">
 										{video.title_hindi}
 									</h3>
 								)}
@@ -68,7 +69,7 @@ if (error) {
 					))}
 				</ul>
 			) : (
-				<p class="text-center text-gray-600">No teachings found at the moment. Please check back later.</p>
+				<p class="text-center text-blue-600">No teachings found at the moment. Please check back later.</p>
 			)}
 		</div>
 	</section>

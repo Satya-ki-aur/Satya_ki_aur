@@ -17,15 +17,18 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="bg-gray-100 text-gray-800">
-		<header class="bg-gray-800 text-white p-4 shadow-md">
+	<body class="bg-sky-50 text-slate-700">
+		<header class="bg-[#89CFF0] text-slate-800 p-4 shadow-md">
 			<nav class="container mx-auto flex justify-between items-center">
-				<div class="text-xl font-bold">Satya ki aur</div> {/* Site Title */}
+				<div class="flex items-center space-x-3">
+					<img src="/Channel Logo.jpg" alt="Satya ki aur Logo" class="h-10 w-10 rounded-full" />
+					<div class="text-xl font-bold">Satya ki aur</div>
+				</div>
 				<div class="flex items-center space-x-4">
-					<a href="/who-we-are" class="hover:text-gray-300">WHO WE ARE</a>
-					<a href="/teachings" class="hover:text-gray-300">THE TEACHINGS</a>
-					<a href="/signup" class="hover:text-gray-300">SIGNUP</a>
-					<a href="/audio" class="hover:text-gray-300">AUDIO ON / OFF</a>
+					<a href="/who-we-are" class="hover:text-black">WHO WE ARE</a>
+					<a href="/teachings" class="hover:text-black">THE TEACHINGS</a>
+					<a href="/signup" class="hover:text-black">SIGNUP</a>
+					<a href="/audio" class="hover:text-black">AUDIO ON / OFF</a>
 					{/* Language toggle buttons removed for now */}
 				</div>
 			</nav>
@@ -45,9 +48,7 @@ const { title } = Astro.props;
     currentLanguage = lang;
     localStorage.setItem(LANG_STORAGE_KEY, lang);
     console.log(`Language set to: ${lang}`);
-    // Here we would typically trigger a re-render or update content
-    // For now, we can add a class to the body to indicate language for styling
-    document.documentElement.lang = lang; // Set html lang attribute
+    document.documentElement.lang = lang; 
     if (lang === 'hi') {
       document.body.classList.add('lang-hi');
       document.body.classList.remove('lang-en');
@@ -59,14 +60,12 @@ const { title } = Astro.props;
       enButton?.classList.add('bg-gray-700');
       hiButton?.classList.remove('bg-gray-700');
     }
-    // In a full Astro setup, you might use a store or events to signal language change to components
   }
 
   enButton?.addEventListener('click', () => setLanguage('en'));
   hiButton?.addEventListener('click', () => setLanguage('hi'));
 
-  // Set initial state on load
-  // setLanguage(currentLanguage); // Temporarily disable language script
+  // setLanguage(currentLanguage); // Temporarily disable language script initial call
 </script>
 
 <style>
@@ -76,38 +75,6 @@ const { title } = Astro.props;
 		width: 100%;
 		height: 100%;
 	}
-</style>
-
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <title>{title}</title>
-  </head>
-  <body class="font-sans">
-    <slot />
-  </body>
-</html>
-
-<style is:global>
-  :root {
-    --font-serif: 'Playfair Display', serif;
-  }
-  
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-  }
-
-  .font-serif {
-    font-family: var(--font-serif);
-  }
+  /* Any other global styles specific to this layout can go here */
 </style>
 
