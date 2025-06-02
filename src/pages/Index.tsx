@@ -89,21 +89,24 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-sky-200 to-sky-300 text-slate-800 dark:from-slate-900 dark:via-gray-800 dark:to-gray-900 dark:text-sky-100">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-white text-slate-800 dark:bg-slate-900 dark:text-sky-100">
+      {/* Hero Section - Light blue background with circular logo */}
       <section 
-        className="relative text-center py-20 md:py-28 lg:py-32 bg-cover bg-no-repeat bg-center rounded-b-[40px] md:rounded-b-[60px] lg:rounded-b-[80px] shadow-xl"
-        style={{
-          backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('/lovable-uploads/3a9be7c0-f13c-40cc-b97d-8b2cda3bc3d3.png')",
-          borderBottom: '5px solid #0284c7'
-        }}
+        className="relative text-center py-12 md:py-16 lg:py-20 bg-sky-200 dark:bg-sky-700 rounded-b-[40px] md:rounded-b-[60px] lg:rounded-b-[80px] shadow-lg"
       >
-        <div className="absolute inset-0 bg-black opacity-30 rounded-b-[40px] md:rounded-b-[60px] lg:rounded-b-[80px]"></div>
-        <div className="relative z-10 container mx-auto px-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-white filter drop-shadow-lg">
+        <div className="container mx-auto px-4">
+          <img
+            src="/Channel Logo.jpg"
+            alt="Channel Inspiration"
+            className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 rounded-full shadow-md border-4 border-white dark:border-sky-500"
+            onError={(e) => {
+              console.error("Error loading hero image: /Channel Logo.jpg");
+            }}
+          />
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 text-sky-800 dark:text-sky-100 filter drop-shadow-md">
             सत्य की ओर
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-200 filter drop-shadow-md">
+          <p className="text-lg sm:text-xl text-sky-700 dark:text-sky-300 filter drop-shadow-sm">
             Exploring the path to truth through wisdom and understanding.
           </p>
         </div>
