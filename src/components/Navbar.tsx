@@ -16,12 +16,12 @@ const Navbar = () => {
         {/* Brand Logo Section */}
         <div className="flex justify-center items-center py-4">
           <NavLink to="/" className="flex items-center cursor-pointer">
-            <img 
+            {/* <img 
               src="/lovable-uploads/3a9be7c0-f13c-40cc-b97d-8b2cda3bc3d3.png" 
               alt="Brand Logo" 
               className="h-12 w-12 rounded-full"
-            />
-            <span className="ml-3 text-2xl font-semibold text-gray-900">Hansanand ji Maharaj</span>
+            /> */}
+            <span className="ml-3 text-2xl font-semibold text-gray-900">सत्य की ओर</span>
           </NavLink>
         </div>
         
