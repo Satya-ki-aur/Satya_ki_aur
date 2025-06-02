@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -16,14 +15,14 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Brand Logo Section */}
         <div className="flex justify-center items-center py-4">
-          <div className="flex items-center">
+          <NavLink to="/" className="flex items-center cursor-pointer">
             <img 
               src="/lovable-uploads/3a9be7c0-f13c-40cc-b97d-8b2cda3bc3d3.png" 
               alt="Brand Logo" 
               className="h-12 w-12 rounded-full"
             />
             <span className="ml-3 text-2xl font-semibold text-gray-900">Hansanand ji Maharaj</span>
-          </div>
+          </NavLink>
         </div>
         
         {/* Navigation Items */}
