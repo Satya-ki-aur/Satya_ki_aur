@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabaseClient'; // Adjusted path
+
+// Interface for items directly from playlistItems.list
+interface YouTubePlaylistItem {
+  snippet: {
+    title: string;
+    description: string;
+    publishedAt: string;
+    thumbnails: {
+      high: {
+        url: string;
+      };
+    };
+    resourceId: {
+      videoId: string;
+    };
+  };
+}
 
 interface Video {
-  id: number;
-  created_at: string;
-  title: string;
+  id: string;
+  titleEnglish: string;
+  titleHindi: string;
   youtube_id: string;
-  'title_hindi': string; // Matches Supabase column name
+  publishedAt: string;
 }
 
 const Index: React.FC = () => {
@@ -14,111 +30,168 @@ const Index: React.FC = () => {
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      const { data, error } = await supabase
-        .from('Satya_ki_aur') // Your table name
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(6);
+  const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+  const UPLOADS_PLAYLIST_ID = 'UUzFOHSeS7s3Pt0YXaqde4tw';
+  const MAX_RESULTS = 6;
+  const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/channel/UCzFOHSeS7s3Pt0YXaqde4tw';
 
-      if (error) {
-        console.error('Error fetching videos:', error);
-        setError(`Error fetching videos: ${error.message}. Check Supabase connection and table name.`);
-        setVideos([]);
-      } else {
-        // Explicitly type data to Video[] or an empty array if null/undefined
-        setVideos((data as Video[] | null) || []);
-        setError(null);
+  useEffect(() => {
+    const fetchVideosFromYouTubePlaylist = async () => {
+      if (!YOUTUBE_API_KEY) {
+        setError("YouTube API Key is missing. Please check your .env file and restart the server.");
+        console.error("YouTube API Key is missing.");
+        return;
+      }
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${UPLOADS_PLAYLIST_ID}&maxResults=${MAX_RESULTS}&key=${YOUTUBE_API_KEY}`
+        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('YouTube API Error:', errorData);
+          throw new Error(`Failed to fetch videos from YouTube: ${response.status} ${errorData.error?.message || ''}`);
+        }
+        const data = await response.json();
+        if (data.items) {
+          const fetchedVideos: Video[] = data.items.map((item: YouTubePlaylistItem) => {
+            const parts = item.snippet.title.split('|');
+            const titleEnglish = parts[0]?.trim() || item.snippet.title; // Fallback to full title if no separator
+            const titleHindi = parts[1]?.trim() || ''; // Fallback to empty if no second part
+            return {
+              id: item.snippet.resourceId.videoId,
+              titleEnglish: titleEnglish,
+              titleHindi: titleHindi,
+              youtube_id: item.snippet.resourceId.videoId,
+              publishedAt: item.snippet.publishedAt,
+            };
+          });
+          setVideos(fetchedVideos);
+          setError(null);
+        } else {
+          setVideos([]);
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+          console.error(err);
+        } else {
+          setError('An unknown error occurred');
+          console.error('An unknown error occurred', err);
+        }
       }
     };
 
-    fetchVideos();
-  }, []);
+    fetchVideosFromYouTubePlaylist();
+  }, [YOUTUBE_API_KEY]);
 
-  const handleThumbnailClick = (youtubeId: string) => {
-    setPlayingVideoId(youtubeId);
+  const handleThumbnailClick = (videoId: string) => {
+    setPlayingVideoId(videoId);
   };
 
   return (
-    <div className="min-h-screen bg-sky-50 text-slate-700">
+    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-sky-200 to-sky-300 text-slate-800 dark:from-slate-900 dark:via-gray-800 dark:to-gray-900 dark:text-sky-100">
       {/* Hero Section */}
-      <section className="bg-sky-200 py-16 text-center rounded-b-[60px]">
-        <div className="container mx-auto px-4">
-          <img
-            src="/lovable-uploads/3a9be7c0-f13c-40cc-b97d-8b2cda3bc3d3.png"
-            alt="Satya ki aur Logo"
-            className="w-32 h-32 md:w-48 md:h-48 mx-auto mb-6 rounded-full shadow-lg"
-            onError={(e) => (e.currentTarget.style.display = 'none')} // Hide if logo not found
-          />
-          <h1 className="text-7xl font-bold text-slate-800">सत्य की ओर</h1>
-          <p className="mt-4 text-xl text-slate-700">Exploring the path to truth through wisdom and understanding</p>
+      <section 
+        className="relative text-center py-20 md:py-28 lg:py-32 bg-cover bg-no-repeat bg-center rounded-b-[40px] md:rounded-b-[60px] lg:rounded-b-[80px] shadow-xl"
+        style={{
+          backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('/lovable-uploads/3a9be7c0-f13c-40cc-b97d-8b2cda3bc3d3.png')",
+          borderBottom: '5px solid #0284c7'
+        }}
+      >
+        <div className="absolute inset-0 bg-black opacity-30 rounded-b-[40px] md:rounded-b-[60px] lg:rounded-b-[80px]"></div>
+        <div className="relative z-10 container mx-auto px-4">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 text-white filter drop-shadow-lg">
+            सत्य की ओर
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-200 filter drop-shadow-md">
+            Exploring the path to truth through wisdom and understanding.
+          </p>
         </div>
       </section>
 
       {/* Latest Teachings Section */}
-      <section className="py-12">
+      <section className="py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-semibold text-center text-slate-800 mb-10">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8 md:mb-12 text-sky-700 dark:text-sky-400">
             Latest Teachings
           </h2>
           {error && (
-            <div className="text-center text-red-500 bg-red-100 p-4 rounded-md mb-8">
-              <p><strong>Error:</strong> {error}</p>
-              <p>Please ensure your <code>.env</code> file is correctly set up with <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>, and that the table 'Satya_ki_aur' exists and is accessible.</p>
+            <div className="text-center text-red-500 dark:text-red-400 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 p-4 rounded-md mb-8">
+              <p className="font-semibold">Error loading videos:</p>
+              <p>{error}</p>
+              <p className="mt-2 text-sm">Please ensure your <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">.env</code> file has the correct <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">VITE_YOUTUBE_API_KEY</code> and restart the development server.</p>
             </div>
           )}
-          {videos.length === 0 && !error && (
-             <p className="text-center text-slate-500">Loading videos or no videos found.</p>
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videos.map((video) => (
-              <div 
-                key={video.id} 
-                className="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl"
-              >
-                {playingVideoId === video.youtube_id ? (
-                  <div className="aspect-w-16 aspect-h-9">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.youtube_id}?autoplay=1`}
-                      title={video.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-full"
-                    ></iframe>
-                  </div>
-                ) : (
-                  <div 
-                    className="aspect-w-16 aspect-h-9 cursor-pointer group relative"
-                    onClick={() => handleThumbnailClick(video.youtube_id)}
-                  >
-                    <img
-                      src={`https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`}
-                      alt={video.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.118-11.07a.75.75 0 011.06 0l4.002 3.502a.75.75 0 010 1.136l-4.002 3.502a.75.75 0 01-1.136-.976L12.25 10l-3.304-2.894a.75.75 0 01-.078-1.036z" clipRule="evenodd" />
-                      </svg>
+          {videos.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {videos.map((video) => (
+                <div 
+                  key={video.id} 
+                  className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden transform transition-all hover:scale-105 duration-300 ease-in-out"
+                >
+                  {playingVideoId === video.youtube_id ? (
+                    <div className="aspect-video">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${video.youtube_id}?autoplay=1`}
+                        title={video.titleEnglish + (video.titleHindi ? ` | ${video.titleHindi}` : '')}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
                     </div>
-                  </div>
-                )}
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1 truncate" title={video.title}>
-                    {video.title}
-                  </h3>
-                  {video['title_hindi'] && (
-                    <h4 className="text-md text-slate-600 mb-2 truncate" title={video['title_hindi']}>
-                      {video['title_hindi']}
-                    </h4>
+                  ) : (
+                    <div className="aspect-video relative cursor-pointer group" onClick={() => handleThumbnailClick(video.youtube_id)}>
+                      <img 
+                        src={`https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`} 
+                        alt={video.titleEnglish + (video.titleHindi ? ` | ${video.titleHindi}` : '')} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => (e.currentTarget.style.display = 'none')}
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-white" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
                   )}
-                  {/* You can add video.id or created_at here if needed for debugging or display */}
+                  <div className="p-4">
+                    <h3 
+                      className="font-semibold text-md text-sky-800 dark:text-sky-300 leading-tight"
+                      title={video.titleEnglish + (video.titleHindi ? ` | ${video.titleHindi}` : '')}
+                    >
+                      {video.titleEnglish}
+                    </h3>
+                    {video.titleHindi && (
+                      <p 
+                        className="font-semibold text-md text-sky-800 dark:text-sky-300 leading-tight"
+                        title={video.titleHindi}
+                      >
+                        {video.titleHindi}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            !error && <p className="text-center text-gray-500 dark:text-gray-400">Loading videos...</p>
+          )}
+
+          {/* CTA to YouTube Channel */}
+          {videos.length > 0 && (
+            <div className="text-center mt-12 md:mt-16">
+              <a
+                href={YOUTUBE_CHANNEL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50"
+              >
+                View All Teachings on YouTube
+              </a>
+            </div>
+          )}
         </div>
       </section>
     </div>
