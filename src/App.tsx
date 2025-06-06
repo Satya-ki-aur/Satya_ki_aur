@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +10,7 @@ import About from "./pages/About";
 import Hansanand from "./pages/Hansanand";
 import Teachings from "./pages/Teachings";
 import Books from "./pages/Books";
+import BookDetail from "./pages/BookDetail";
 import AudioBooks from "./pages/AudioBooks";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +31,7 @@ const App = () => (
               <Route path="/hansanand" element={<Hansanand />} />
               <Route path="/teachings" element={<Teachings />} />
               <Route path="/books" element={<Books />} />
+              <Route path="/book/:id" element={<BookDetail />} />
               <Route path="/audio-books" element={<AudioBooks />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
